@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import './App.css';
+import { useState, useEffect } from "react";
+import "./App.css";
 
 const snakes = {
   17: 7,
@@ -28,32 +28,58 @@ function App() {
   const [turn, setTurn] = useState(1);
   const [lastRoll, setLastRoll] = useState(null);
   const [winner, setWinner] = useState(null);
+  const [isRolling, setIsRolling] = useState(false);
+  const [currentDice, setCurrentDice] = useState("🎲");
+
+  const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+
+  useEffect(() => {
+    if (lastRoll && !isRolling && !winner) {
+      const timer = setTimeout(() => {
+        setLastRoll(null);
+        setCurrentDice("🎲");
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [lastRoll, isRolling, winner]);
 
   const rollDice = () => {
-    if (winner) return;
+    if (winner || isRolling) return;
 
-    const roll = Math.floor(Math.random() * 6) + 1;
-    setLastRoll(roll);
+    setIsRolling(true);
 
-    if (turn === 1) {
-      let newPos = p1Pos + roll;
-      if (newPos <= 100) {
-        if (snakes[newPos]) newPos = snakes[newPos];
-        else if (ladders[newPos]) newPos = ladders[newPos];
-        setP1Pos(newPos);
-        if (newPos === 100) setWinner(1);
+    // Dice rolling animation (cycling faces)
+    const interval = setInterval(() => {
+      setCurrentDice(diceFaces[Math.floor(Math.random() * 6)]);
+    }, 80);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      const roll = Math.floor(Math.random() * 6) + 1;
+      setLastRoll(roll);
+      setCurrentDice(diceFaces[roll - 1]);
+
+      if (turn === 1) {
+        let newPos = p1Pos + roll;
+        if (newPos <= 100) {
+          if (snakes[newPos]) newPos = snakes[newPos];
+          else if (ladders[newPos]) newPos = ladders[newPos];
+          setP1Pos(newPos);
+          if (newPos === 100) setWinner(1);
+        }
+        if (newPos !== 100) setTurn(2);
+      } else {
+        let newPos = p2Pos + roll;
+        if (newPos <= 100) {
+          if (snakes[newPos]) newPos = snakes[newPos];
+          else if (ladders[newPos]) newPos = ladders[newPos];
+          setP2Pos(newPos);
+          if (newPos === 100) setWinner(2);
+        }
+        if (newPos !== 100) setTurn(1);
       }
-      if (!winner && newPos !== 100) setTurn(2);
-    } else {
-      let newPos = p2Pos + roll;
-      if (newPos <= 100) {
-        if (snakes[newPos]) newPos = snakes[newPos];
-        else if (ladders[newPos]) newPos = ladders[newPos];
-        setP2Pos(newPos);
-        if (newPos === 100) setWinner(2);
-      }
-      if (!winner && newPos !== 100) setTurn(1);
-    }
+      setIsRolling(false);
+    }, 600);
   };
 
   const resetGame = () => {
@@ -61,6 +87,7 @@ function App() {
     setP2Pos(1);
     setTurn(1);
     setLastRoll(null);
+    setCurrentDice("🎲");
     setWinner(null);
   };
 
@@ -76,11 +103,11 @@ function App() {
       // Row 3: 61...70 (L to R)
       // ...
       // Row 9: 1...10 (L to R)
-      
+
       const rowNum = 10 - r; // 10, 9, 8... 1
       const startVal = (rowNum - 1) * 10 + 1;
       const endVal = rowNum * 10;
-      
+
       if (isReverse) {
         // 100 to 91, 80 to 71, etc.
         for (let i = endVal; i >= startVal; i--) {
@@ -108,11 +135,18 @@ function App() {
           {winner ? (
             <div className="win-message">
               <span className="win-item">🏆 Player {winner} wins!</span>
-              <span className="win-item">😅 Player {winner === 1 ? 2 : 1} loses</span>
+              <span className="win-item">
+                😅 Player {winner === 1 ? 2 : 1} loses
+              </span>
             </div>
           ) : (
             <div className="turn-indicator">
-              Turns <div className={`turn-dot ${turn === 1 ? 'red-dot' : 'blue-dot'}`}>P{turn}</div>
+              Turns{" "}
+              <div
+                className={`turn-dot ${turn === 1 ? "red-dot" : "blue-dot"}`}
+              >
+                P{turn}
+              </div>
             </div>
           )}
         </div>
@@ -132,10 +166,10 @@ function App() {
             <div className="cell-header">
               <span className="cell-num">{num}</span>
               {snakes[num] && (
-                <span className="badge snake-badge">(S - {snakes[num]})</span>
+                <span className="badge snake-badge">S{snakes[num]}</span>
               )}
               {ladders[num] && (
-                <span className="badge ladder-badge">(L - {ladders[num]})</span>
+                <span className="badge ladder-badge">L{ladders[num]}</span>
               )}
             </div>
             <div className="players-container">
@@ -147,16 +181,25 @@ function App() {
       </div>
 
       <div className="controls">
-        <button className="btn btn-primary" onClick={rollDice} disabled={!!winner}>
-          Roll Dice {lastRoll ? `(${lastRoll})` : ''}
+        <button
+          id="roll-dice-btn"
+          className="btn btn-primary"
+          onClick={rollDice}
+          disabled={!!winner || isRolling}
+        >
+          <span className={`dice-icon ${isRolling ? "rolling" : ""}`}>
+            {currentDice}
+          </span>{" "}
+          Roll Dice {lastRoll && !isRolling ? `(${lastRoll})` : ""}
         </button>
-        <button className="btn btn-outline" onClick={resetGame}>
+        <button id="reset-btn" className="btn btn-outline" onClick={resetGame}>
           Reset
         </button>
       </div>
 
       <p className="footer-text">
-        Exact 100 is required to win. Land on a ladder to climb up, a snake to slide down.
+        Exact 100 is required to win. Land on a <strong>ladder</strong> to climb
+        up, a <strong>snake</strong> to slide down.
       </p>
     </div>
   );
