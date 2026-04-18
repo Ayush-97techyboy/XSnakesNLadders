@@ -8,11 +8,27 @@ A fully functional, responsive, and aesthetically pleasing Snake & Ladders game 
 - **Snakes & Ladders Logic**: Includes all major obstacles and boosts with visual badges.
 - **Multiplayer State**: Support for two players (P1 and P2) with unique color-coded tokens.
 - **Responsive Design**: Optimized for Mobile (< 430px), Tablet (< 770px), and Desktop (1024px, 1440px+).
-- **Game Mechanics**: 
-  - Random dice rolls (1-6).
-  - Exact 100 requirement to win.
-  - Interactive turn indicator and celebratory win messages.
-  - Game reset functionality.
+## Game Mechanics
+
+- **Dice**: Standard 6-sided dice (1-6).
+- **Exact Win**: Players must land exactly on cell 100. If a roll exceeds 100, the player stays in their current position.
+- **Ladders (Boosts)**:
+  - 4 → 14
+  - 9 → 31
+  - 20 → 38
+  - 28 → 84
+  - 40 → 59
+  - 63 → 81
+  - 71 → 91
+- **Snakes (Obstacles)**:
+  - 17 → 7
+  - 54 → 34
+  - 62 → 19
+  - 64 → 60
+  - 87 → 24
+  - 93 → 73
+  - 95 → 75
+  - 99 → 10
 
 ## Technical Implementation
 
