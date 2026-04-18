@@ -299,7 +299,8 @@
     padding: 15px;
   }
   .footer-text {
-    display: none;
+    font-size: 12px;
+    margin-top: 5px;
   }
 }
 
