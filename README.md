@@ -1,18 +1,35 @@
-# React + Vite
+# Snake & Ladders
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A fully functional, responsive, and aesthetically pleasing Snake & Ladders game built with React and Vite.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Dynamic Board**: A 10x10 grid with boustrophedon (zigzag) numbering.
+- **Snakes & Ladders Logic**: Includes all major obstacles and boosts with visual badges.
+- **Multiplayer State**: Support for two players (P1 and P2) with unique color-coded tokens.
+- **Responsive Design**: Optimized for Mobile (< 430px), Tablet (< 770px), and Desktop (1024px, 1440px+).
+- **Game Mechanics**: 
+  - Random dice rolls (1-6).
+  - Exact 100 requirement to win.
+  - Interactive turn indicator and celebratory win messages.
+  - Game reset functionality.
 
-## React Compiler
+## Technical Implementation
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- **React State Management**: Handles player positions, turns, dice rolls, and winners.
+- **Strict Grid CSS**: Uses `minmax(0, 1fr)` and CSS variables to ensure perfectly square cells on all screen sizes.
+- **Fluid Layout**: Uses `clamp()` and `min()` for sizing typography and UI components.
+- **Animations**: CSS transitions for smooth player token movement.
 
-Note: This will impact Vite dev & build performances.
+## How to Run
 
-## Expanding the ESLint configuration
+1.  Clone the repository.
+2.  Install dependencies: `npm install`
+3.  Start the development server: `npm run dev`
+4.  Open the local URL in your browser.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Built With
+
+- React.js
+- Vite
+- Vanilla CSS
